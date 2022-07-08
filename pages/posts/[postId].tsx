@@ -1,14 +1,54 @@
+import { GetStaticPaths, GetStaticProps, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-export interface IPostDetailPageProps {}
+export interface IPostDetailPageProps {
+	post: any;
+}
 
-export default function PostDetailPage(props: IPostDetailPageProps) {
+export default function PostDetailPage({ post }: IPostDetailPageProps) {
 	const router = useRouter();
+	console.log('post')
+	console.log(post)
+
+	if (!post) return null;
 	return (
 		<div>
 			<h1>Post Detail page</h1>
-			<p>Query: {JSON.stringify(router.query)}</p>
+
+			<p>{post.title}</p>
+			<p>{post.author}</p>
+			<p>{post.description}</p>
 		</div>
 	);
 }
+
+// Run on server at build time
+export const getStaticPaths: GetStaticPaths = async () => {
+	console.log('\ngetStaticPaths');
+	const response = await fetch('https://js-post-api.herokuapp.com/api/posts?_page=1');
+	const data = await response.json();
+	return {
+		paths: data.data.map((post: any) => ({ params: { postId: post.id } })),
+		fallback: false,
+	};
+};
+
+// Run on server at build time
+export const getStaticProps: GetStaticProps<IPostDetailPageProps> = async (
+	context: GetStaticPropsContext
+) => {
+	console.log('\ngetStaticProps', context.params?.postId);
+	const postId = context.params?.postId;
+	if (!postId) return { notFound: true };
+	// console.log('static props');
+	const response = await fetch(`https://js-post-api.herokuapp.com/api/posts/${postId}`);
+	const data = await response.json();
+	// console.log(data);
+
+	return {
+		props: {
+			post: data,
+		},
+	};
+};
