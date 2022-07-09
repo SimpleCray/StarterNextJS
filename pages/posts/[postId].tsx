@@ -11,6 +11,9 @@ export default function PostDetailPage({ post }: IPostDetailPageProps) {
 	console.log('post')
 	console.log(post)
 
+	// For fallback: true
+	// if (router.isFallback) return <div style={{fontSize: 30, textAlign: 'center'}}>Loading</div>
+
 	if (!post) return null;
 	return (
 		<div>
@@ -31,6 +34,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	return {
 		paths: data.data.map((post: any) => ({ params: { postId: post.id } })),
 		fallback: false,
+		// fallback: 'blocking', // will wait for a page to be generated
+		// fallback: true, // will set a isFallback true status to handle in client
 	};
 };
 
@@ -50,5 +55,6 @@ export const getStaticProps: GetStaticProps<IPostDetailPageProps> = async (
 		props: {
 			post: data,
 		},
+		revalidate: 60,
 	};
 };
