@@ -15,7 +15,7 @@ export default function PostListPage({ posts }: IPostListPageProps) {
 				{posts.map((post) => (
 					<li key={post.id}>
 						<Link href={`/posts/${post.id}`}>
-						<a>{post.title}</a>
+						<a>{post.id} - {post.title}</a>
 						</Link>
 					</li>
 				))}
