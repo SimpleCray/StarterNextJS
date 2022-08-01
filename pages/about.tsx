@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import Header from '@components/common/header';
 import { useRouter } from 'next/router';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
+import { MainLayout } from '@components/layout';
 
 export interface AboutPageProps {}
 
@@ -48,6 +49,8 @@ export default function AboutPage(props: AboutPageProps) {
 		</div>
 	);
 }
+
+AboutPage.Layout = MainLayout;
 
 export const getStaticProps: GetStaticProps<AboutPageProps> = async (
 	context: GetStaticPropsContext
